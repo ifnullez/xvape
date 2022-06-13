@@ -1,0 +1,42 @@
+#site-footer {
+    background-color: #000;
+    margin-top: 30px;
+    color: #fff;
+    & .footer__bottom {
+        border-top: 1px dashed #ccc;
+    }
+    & .footer_contact_info {
+        margin-bottom: 15px;
+        & a {
+            color: #fff;
+            font-size: 18px;
+            &:hover {
+                text-decoration: dashed;
+            }
+        }
+    }
+    & .site_info {
+        font-size: 24px;
+    }
+    & #footer_menu {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        & li {
+            & a {
+                color: #fff;
+                font-size: 18px;
+            }
+        }
+        & ul {
+            list-style: none;
+            padding: 0;
+             & li {
+                 & a {
+                     font-size: 18px;
+                     color: #fff;
+                 }
+             }
+        }
+    }
+}

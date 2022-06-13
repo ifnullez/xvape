@@ -1,0 +1,39 @@
+# Core
+#
+# /wp-admin/
+# /wp-content/index.php
+# /wp-content/languages
+# /wp-content/plugins/index.php
+# /wp-content/themes/index.php
+# /wp-includes/
+# /index.php
+# /license.txt
+# /readme.html
+# /wp-*.php
+# /xmlrpc.php
+
+# Configuration
+# wp-config.php
+
+# /wp-content/themes/twenty*/
+
+# Example plugin
+# /wp-content/plugins/hello.php
+
+# Uploads
+# /wp-content/uploads/
+
+# Log files
+*.log
+
+# htaccess
+/.htaccess
+
+# All plugins
+# Note: If you wish to whitelist plugins,
+# uncomment the next line
+#/wp-content/plugins
+
+.parcel-cache
+node_modules
+vendor
