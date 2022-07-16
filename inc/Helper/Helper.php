@@ -344,6 +344,10 @@ class Helper
                 'max_price' => max($prices_array),
             ];
         }
+	return [
+        	'min_price' => 0,
+                'max_price' => 1000,
+        ];
     }
 
     public function pagination(\WP_Query$wp_query = null, $echo = true, $params = [])

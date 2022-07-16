@@ -149,7 +149,7 @@ class ThemeInit
             'added_to_cart' => esc_attr__('added to cart', 'woocommerce'),
             'out_of_stock' => esc_attr__('Out of stock', 'woocommerce'),
             'price_filter' => $this->helper->get_products_prices(),
-            'selected_min' => !empty($_GET['mn_p']) ? $_GET['mn_p'] : $this->helper->get_products_prices()['min_price'],
+            'selected_min' => !empty($_GET['mn_p']) ? $_GET['mn_p'] : $this->helper->get_products_prices()['min_price'], 
             'selected_max' => !empty($_GET['mx_p']) ? $_GET['mx_p'] : $this->helper->get_products_prices()['max_price'],
         ]);
     }

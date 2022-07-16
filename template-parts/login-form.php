@@ -15,9 +15,9 @@
                 <?php _e('Remember me', 'woocommerce'); ?>
             </label>
         </div>
-        <button type="button" id="forgot_password" class="forgot_button">
+        <a href="<?php echo esc_url( wp_lostpassword_url() ); ?>" id="forgot_password" class="forgot_button">
             <?php _e('Forgot password', 'woocommerce'); ?>
-        </button>
+        </a>
     </div>
     <button type="submit" id="login_submit" name="login_submit" class="btn btn-success w-100 mt-3"><?php _e('Login', 'woocommerce'); ?></button>
     <?php wp_nonce_field( 'login_register_nonce_security' ); ?>

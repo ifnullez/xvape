@@ -29,8 +29,8 @@ $min_max_prices = $helper->get_products_prices(); ?>
                 <label class="form-check-label" for="in_stock"><?php _e('In stock', 'woocommerce'); ?></label>
             </div>
             <div class="selected_prices d-flex flex-nowrap justify-content-between">
-                <span class="min"><?php echo !empty($_GET['mn_p']) ? $_GET['mn_p'] : $min_max_prices['min_price']; ?></span>
-                <span class="max"><?php echo !empty($_GET['mx_p']) ? $_GET['mx_p'] : $min_max_prices['max_price']; ?></span>
+                <span class="min"><?php echo !empty($_GET['mn_p']) ? $_GET['mn_p'] : $min_max_prices['min_price'] ?? 0; ?></span>
+                <span class="max"><?php echo !empty($_GET['mx_p']) ? $_GET['mx_p'] : $min_max_prices['max_price'] ?? 1000; ?></span>
             </div>
             <div id="price_filter_slider">
             <input type="hidden" id="min_price" name="mn_p"
