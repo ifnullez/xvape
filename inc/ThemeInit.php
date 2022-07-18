@@ -191,7 +191,7 @@ class ThemeInit
         $item->status = '';
         return $item;
     }
-
+    // TODO: Rewrite this method Because it\'s bad decision 
     public function auto_add_cats($items, $menu, $args)
     {
         $theme_locations = get_nav_menu_locations();
