@@ -204,7 +204,11 @@ class WC_Custom {
 
     public function custom_product_query( $q ){
         $tax_query = $q->get( 'tax_query' );
-        $meta_query = $q->get( 'meta_query' ); 
+        $meta_query = $q->get( 'meta_query' );
+
+        $q->set('orderby', 'meta_value');
+        $q->set('meta_key', '_stock_status');
+        
 
         $params = [];
         $attrs_params = [];
@@ -442,6 +446,45 @@ class WC_Custom {
     }
     public function product_custom_parameters_tab_content($param) {
         get_template_part('template-parts/woocommerce/admin/tabs/parameters', 'tab');
+    }
+
+    public function get_product_cat_child_cat($main_term = ''): array
+    {
+        if( empty($main_term) ){
+            $main_term = get_queried_object_id();
+        }
+
+        $ids = [];
+        if( is_product_category() ) {
+            $args_query = [
+                'taxonomy' => 'product_cat', 
+                'hide_empty' => true, 
+                'child_of' => $main_term
+            ];
+            if ( !empty($main_term) && $main_term != 0 ) {
+                $terms = get_terms( $args_query );
+                foreach ( $terms as $term ) {
+                    if( $term->parent == $main_term ) {
+                      $ids[] = $term->term_id; 
+                    }
+                }
+            }
+        }
+        return $ids;
+    }
+
+    public function category_childrens()
+    {
+        $categories = $this->get_product_cat_child_cat();
+        if(!empty($categories)){
+            foreach($categories as $catID){
+                get_template_part('woocommerce/content-product', 'cat', [ 
+                    'category' => get_term_by('id', $catID, 'product_cat'),
+                    'cat_in_cat' => count($this->get_product_cat_child_cat($catID))
+                    ]
+                );
+            }
+        }
     }
     
 }

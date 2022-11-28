@@ -18,7 +18,13 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+$wc_custom = new App\WC\WC_Custom();
 ?>
 <!-- <div class="products columns-<?php //echo esc_attr( wc_get_loop_prop( 'columns' ) ); ?>"> -->
 <div class="products col-12">
 	<div class="row">
+		<?php
+		if(empty($_GET['paged']) || $_GET['paged'] == 1 ){ 
+			$wc_custom->category_childrens(); 
+		}
+		?>

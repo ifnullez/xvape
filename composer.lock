@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4898e58d57cf76a6cd170cc86d7b09a",
+    "content-hash": "a85bda5263233da8a45ea6a8d1ef139b",
     "packages": [
         {
             "name": "htmlburger/carbon-field-icon",
-            "version": "v3.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/htmlburger/carbon-field-icon.git",
@@ -23,6 +23,7 @@
             "require": {
                 "htmlburger/carbon-fields": "^3.0"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -68,16 +69,16 @@
         },
         {
             "name": "htmlburger/carbon-fields",
-            "version": "v3.3.4",
+            "version": "v3.4.0-beta.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/htmlburger/carbon-fields.git",
-                "reference": "2ae6773c004b873a1b0456613b14852c1a436a96"
+                "reference": "00ce47dd3a0c19e4058aa542d1c0e3f51708897e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/htmlburger/carbon-fields/zipball/2ae6773c004b873a1b0456613b14852c1a436a96",
-                "reference": "2ae6773c004b873a1b0456613b14852c1a436a96",
+                "url": "https://api.github.com/repos/htmlburger/carbon-fields/zipball/00ce47dd3a0c19e4058aa542d1c0e3f51708897e",
+                "reference": "00ce47dd3a0c19e4058aa542d1c0e3f51708897e",
                 "shasum": ""
             },
             "require": {
@@ -203,13 +204,16 @@
                 "issues": "https://github.com/htmlburger/carbon-fields/issues",
                 "source": "https://github.com/htmlburger/carbon-fields"
             },
-            "time": "2022-05-05T14:49:59+00:00"
+            "time": "2021-07-28T15:53:49+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "htmlburger/carbon-fields": 20,
+        "htmlburger/carbon-field-icon": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

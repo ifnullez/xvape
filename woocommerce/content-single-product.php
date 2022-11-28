@@ -147,6 +147,13 @@ $product_properties = $helper->get_product_parameters_by_id($product->get_id());
 				'posts_per_page' 	=> 4,
 				'orderby'        	=> 'rand',
 				'order'          	=> 'desc',
+				'meta_query'        => [
+					[
+						'key'     => '_stock_status',
+						'value'   => 'instock',
+						'compare' => '='
+					]
+				]
 			]);
 
 			if($related_query->have_posts()){

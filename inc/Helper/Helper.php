@@ -288,7 +288,6 @@ class Helper
           ORDER BY meta_value");
                 $results[$key]['avg_rate'] = $res[0]->avg_rate;
             }
-
             $avg_rate = array_column($results, 'avg_rate');
             array_multisort($avg_rate, SORT_DESC, $results);
             $top_rated = [];

@@ -1,6 +1,6 @@
 <?php 
 $product = wc_get_product($args->ID);
-if ( empty( $product ) || ! $product->is_visible() ) {
+if ( empty( $product ) ) {
 	return;
 }
 
@@ -16,7 +16,7 @@ $helper = new App\Helper\Helper();
         <div class="product-rating">
             <?php echo $wc_custom->get_product_star_rating($product->get_average_rating()); ?>
         </div>
-        <a href="<?php echo get_the_permalink($product->get_id()); ?>">
+        <a class="card_img_wrapper" href="<?php echo get_the_permalink($product->get_id()); ?>">
             <?php if(has_post_thumbnail($product->get_id())){ ?>
             <?php echo wp_get_attachment_image(get_post_thumbnail_id($product->get_id()), 'woocommerce_thumbnail', false, [
 					'class' => 'card-img-top'

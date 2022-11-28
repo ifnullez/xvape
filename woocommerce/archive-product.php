@@ -28,7 +28,7 @@ get_header();
  */
 //do_action( 'woocommerce_before_main_content' );
 $helper = new App\Helper\Helper(); 
-$wc_custom = new App\WC\WC_Custom(); 
+$wc_custom = new App\WC\WC_Custom();
 // $products = $wc_custom->get_products();
 // filters sidebar
 get_template_part('/template-parts/woocommerce/filters', 'sidebar'); ?>
@@ -43,7 +43,6 @@ get_template_part('/template-parts/woocommerce/filters', 'sidebar'); ?>
     </div>
 </div>
 <?php
-
 if ( woocommerce_product_loop() ) {
 
 	/**

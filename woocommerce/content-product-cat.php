@@ -18,11 +18,12 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-// $category = $args;
+$category = $args['category'];
+$cat_childrens = $args['cat_in_cat'];
 ?>
 <div class="product_category col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-3 mb-4 first">
 	<div class="card position-relative shadow-sm">
-		<a href="<?php echo get_term_link($category->term_id); ?>">
+		<a class="card_img_wrapper" href="<?php echo get_term_link($category->term_id); ?>">
             <?php 
 			if(!empty(get_term_meta( $category->term_id, 'thumbnail_id', true ))){ ?>
             <?php echo wp_get_attachment_image(get_term_meta( $category->term_id, 'thumbnail_id', true ), 'woocommerce_thumbnail', false, [
@@ -44,7 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<span class="in_category d-flex justify-content-center align-items-center flex-nowrap">
 				<i class="bi bi-list-ol me-1"></i>
 				<span class="count badge rounded-pill bg-dark">
-					<?php echo $category->count; ?>
+					<?php echo $category->count + $cat_childrens; ?>
 				</span>
 			</span>
 			<a href="<?php echo get_term_link($category->term_id); ?>" class="btn btn-success">

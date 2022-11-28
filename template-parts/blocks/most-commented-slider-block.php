@@ -7,7 +7,14 @@ $most = new WP_Query([
     'posts_per_page'    => '12',
     'post__in'          => $helper->get_most_rated_products(),
     'orderby'           => 'post__in',
-    'order'             => 'DESC'
+    'order'             => 'DESC',
+    'meta_query'        => [
+        [
+            'key'     => '_stock_status',
+            'value'   => 'instock',
+            'compare' => '='
+        ]
+    ]
 ]);
 
 if(!empty($helper->get_most_rated_products()) && $most->have_posts()){ ?>

@@ -11,13 +11,10 @@
 @import "./parts/loader";
 @import "~/node_modules/tiny-slider/dist/tiny-slider.css";
 
-html {
-    box-sizing: border-box;
-    font-size: 16px;
-}
-
 html,
 body {
+    font-size: 16px;
+    box-sizing: border-box;
     overflow-x: hidden;
     height: 100%;
 }
@@ -173,7 +170,7 @@ a {
 // }
 
 main.site-main {
-    min-height: 100vh;
+    // min-height: 100vh;
     transition: all .5s;
 
     &.menu_opened {

@@ -11,6 +11,17 @@
 .woocommerce .woocommerce-checkout .woocommerce-billing-fields #billing_company {
     display: none !important;
 }
+.card_img_wrapper {
+    position: relative;
+    height: 20em;
+    overflow: hidden;
+    img {
+        transition: all .5s;
+        position: absolute;
+        object-fit: cover;
+        aspect-ratio: 0.9;
+    }
+}
 
 .woocommerce .woocommerce-breadcrumb {
     margin: 10px 0;
@@ -167,6 +178,7 @@
     border-radius: .3rem 0;
     display: flex;
     flex-flow: row nowrap;
+    z-index: 1;
 
     & i {
         transform: scale(1) rotateZ(0deg);
@@ -185,6 +197,7 @@
     position: absolute;
     right: 5px;
     top: 3px;
+    z-index: 1;
 }
 
 .product-slider {
@@ -223,6 +236,14 @@
 
 .woocommerce {
     .product_category {
+        &:hover {
+            .card_img_wrapper {
+                img {
+                    transition: all .5s;
+                    transform: scale(1.5);
+                }
+            }
+        }
         .card-body {
             .card-title {
                 font-size: 100%;
@@ -240,6 +261,14 @@
     }
 
     .product {
+        &:hover {
+            .card_img_wrapper {
+                img {
+                    transition: all .5s;
+                    transform: scale(1.5);
+                }
+            }
+        }
 
         // & .related.products {
         //     & ul.products {
@@ -248,7 +277,7 @@
         // }
         .card {
             a {
-                img.card-img-top {
+                img {
                     display: unset;
                     margin: 0;
                 }

@@ -4,7 +4,14 @@ $recent_args = new WP_Query([
     'post_type'         => 'product',
     'posts_per_page'    => '12',
     'orderby'           => 'date',
-    'order'             => 'DESC'
+    'order'             => 'DESC',
+    'meta_query'        => [
+        [
+            'key'     => '_stock_status',
+            'value'   => 'instock',
+            'compare' => '='
+        ]
+    ]
 ]);
 if($recent_args->have_posts()){ ?>
 <div class="container overflow-hidden mt-3">
