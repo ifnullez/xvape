@@ -46,7 +46,7 @@
                     class="widget_shopping_cart btn position-relative shopping-cart-btn" data-bs-toggle="offcanvas" data-bs-target="#miniCartWidget" aria-controls="miniCartWidget" title="<?php _e('Cart', 'woocommerce');?>">
                     <i class="bi bi-bag-check"></i>
                     <span class="cart_count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
-                        <?php echo WC()->cart->get_cart_contents_count(); ?>
+                        <?php echo class_exists( 'WooCommerce' ) ? WC()->cart->get_cart_contents_count() : 0; ?>
                     </span>
                 </button>
                 <?php if (is_user_logged_in()) {?>

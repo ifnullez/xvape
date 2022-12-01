@@ -12,6 +12,7 @@ use Automattic\Jetpack\Constants;
 use Carbon_Fields\Carbon_Fields;
 use Carbon_Field_Icon\Icon_Field;
 use stdClass;
+use WC_AJAX;
 // use App\CarbonFieldsOverrides\ExtendAssociationField;
 
 // use App\WC\Checkout;
@@ -133,25 +134,27 @@ class ThemeInit
     {
         wp_enqueue_style('main', get_stylesheet_directory_uri() . '/assets/dist/main.css', [], $this->theme_version, 'all');
         wp_enqueue_script('main', get_stylesheet_directory_uri() . '/assets/dist/main.js', ['jquery'], $this->theme_version, true);
-        wp_localize_script('main', 'main', [
-            'url' => admin_url('admin-ajax.php'),
-            'wc_ajax_url' => \WC_AJAX::get_endpoint('%%endpoint%%'),
-            'update_order_review_nonce' => wp_create_nonce('update-order-review'),
-            'apply_coupon_nonce' => wp_create_nonce('apply-coupon'),
-            'remove_coupon_nonce' => wp_create_nonce('remove-coupon'),
-            'option_guest_checkout' => get_option('woocommerce_enable_guest_checkout'),
-            'checkout_url' => \WC_AJAX::get_endpoint('checkout'),
-            'is_checkout' => is_checkout() && empty($wp->query_vars['order-pay']) && !isset($wp->query_vars['order-received']) ? 1 : 0,
-            'debug_mode' => Constants::is_true('WP_DEBUG'),
-            'i18n_checkout_error' => esc_attr__('Error processing checkout. Please try again.', 'woocommerce'),
-            'currency_symbol' => get_woocommerce_currency_symbol(),
-            'cart_title' => esc_attr__('Cart', 'woocommerce'),
-            'added_to_cart' => esc_attr__('added to cart', 'woocommerce'),
-            'out_of_stock' => esc_attr__('Out of stock', 'woocommerce'),
-            'price_filter' => $this->helper->get_products_prices(),
-            'selected_min' => !empty($_GET['mn_p']) ? $_GET['mn_p'] : $this->helper->get_products_prices()['min_price'], 
-            'selected_max' => !empty($_GET['mx_p']) ? $_GET['mx_p'] : $this->helper->get_products_prices()['max_price'],
-        ]);
+        if(class_exists( 'WooCommerce' )){
+            wp_localize_script('main', 'main', [
+                'url' => admin_url('admin-ajax.php'),
+                'wc_ajax_url' => WC_AJAX::get_endpoint('%%endpoint%%'),
+                'update_order_review_nonce' => wp_create_nonce('update-order-review'),
+                'apply_coupon_nonce' => wp_create_nonce('apply-coupon'),
+                'remove_coupon_nonce' => wp_create_nonce('remove-coupon'),
+                'option_guest_checkout' => get_option('woocommerce_enable_guest_checkout'),
+                'checkout_url' => WC_AJAX::get_endpoint('checkout'),
+                'is_checkout' => is_checkout() && empty($wp->query_vars['order-pay']) && !isset($wp->query_vars['order-received']) ? 1 : 0,
+                'debug_mode' => Constants::is_true('WP_DEBUG'),
+                'i18n_checkout_error' => esc_attr__('Error processing checkout. Please try again.', 'woocommerce'),
+                'currency_symbol' => get_woocommerce_currency_symbol(),
+                'cart_title' => esc_attr__('Cart', 'woocommerce'),
+                'added_to_cart' => esc_attr__('added to cart', 'woocommerce'),
+                'out_of_stock' => esc_attr__('Out of stock', 'woocommerce'),
+                'price_filter' => $this->helper->get_products_prices(),
+                'selected_min' => !empty($_GET['mn_p']) ? $_GET['mn_p'] : $this->helper->get_products_prices()['min_price'], 
+                'selected_max' => !empty($_GET['mx_p']) ? $_GET['mx_p'] : $this->helper->get_products_prices()['max_price'],
+            ]);
+        }
     }
 
     public function speed_up_wp()

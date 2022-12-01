@@ -1,11 +1,13 @@
 <?php 
 $product = wc_get_product($args->ID);
+
 if ( empty( $product ) ) {
 	return;
 }
 
 $wc_custom = new App\WC\WC_Custom();
 $helper = new App\Helper\Helper();
+$availability = $wc_custom->get_product_and_variation_availability($product);
 ?>
 <div class="product product-slider col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-3">
     <div class="card position-relative shadow-sm">
@@ -32,7 +34,7 @@ $helper = new App\Helper\Helper();
             </a>
         </div>
         <div class="card-footer justify-content-between d-flex align-items-center">
-            <?php if(!$product->is_in_stock()){ ?>
+            <?php if(!$availability){ ?>
             <?php echo wc_get_stock_html($product); ?>
             <?php } else { ?>
             <span class="product-price">

@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
 global $product;
 $wc_custom = new App\WC\WC_Custom();
 $helper = new App\Helper\Helper();
-
+// $wc_custom->set_all_products_variable_type();
 /**
  * Hook: woocommerce_before_single_product.
  *
@@ -32,8 +32,10 @@ if ( post_password_required() ) {
 	echo get_the_password_form(); // WPCS: XSS ok.
 	return;
 }
-$product_properties = $helper->get_product_parameters_by_id($product->get_id()); ?>
-<div id="custom_product-<?php the_ID(); ?>" <?php wc_product_class( '', $product ); ?>>
+
+$product_properties = $helper->get_product_parameters_by_id($product->get_id()); 
+$availability = $wc_custom->get_product_and_variation_availability($product); ?>
+<div id="custom_product-<?php the_ID(); ?>">
     <?php
 	/**
 	 * Hook: woocommerce_before_single_product_summary.
@@ -47,7 +49,13 @@ $product_properties = $helper->get_product_parameters_by_id($product->get_id());
     <div class="custom_summary container my-3 p-0">
         <div class="row">
             <div class="custom_summary__product_attachments col-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6 position-relative">
-				<div class="stock"><?php echo wc_get_stock_html($product); ?></div>
+				<div class="stock">
+					<?php if($availability){ ?>
+						<p class="stock"><?php _e('In stock', 'woocommerce'); ?></p>
+					<?php } else { ?>
+						<p class="stock out-of-stock"><?php _e('Out of stock', 'woocommerce'); ?></p>
+					<?php } ?>
+				</div>
 				<div class="attachments d-flex flex-wrap">
 					<?php if(!empty($product->get_gallery_image_ids())){
 						foreach( $product->get_gallery_image_ids() as $attachment_id ) { ?>
@@ -163,6 +171,7 @@ $product_properties = $helper->get_product_parameters_by_id($product->get_id());
 					get_template_part( 'woocommerce/content', 'product', $full_product);
 				}
 				wp_reset_postdata();
+				wp_reset_query();
 			} ?>
 		</div>
 	</div>

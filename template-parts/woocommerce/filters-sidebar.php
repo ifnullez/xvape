@@ -23,11 +23,11 @@ $min_max_prices = $helper->get_products_prices(); ?>
                 <input type="hidden" name="p_cat[]" value="<?php echo get_queried_object()->term_id; ?>" />
             <?php } ?>
             <input type="hidden" name="post_type" value="product" />
-            <div class="form-check form-switch mt-2 mb-2 in_stock">
+            <!-- <div class="form-check form-switch mt-2 mb-2 in_stock">
                 <input class="form-check-input" type="checkbox" role="switch" name="in_stock" id="in_stock"
-                    <?php echo !empty($_GET['in_stock']) && $_GET['in_stock'] == 'on' ? 'checked' : ''; ?>>
+                    <?php //echo !empty($_GET['in_stock']) && $_GET['in_stock'] == 'on' ? 'checked' : ''; ?>>
                 <label class="form-check-label" for="in_stock"><?php _e('In stock', 'woocommerce'); ?></label>
-            </div>
+            </div> -->
             <div class="selected_prices d-flex flex-nowrap justify-content-between">
                 <span class="min"><?php echo !empty($_GET['mn_p']) ? $_GET['mn_p'] : $min_max_prices['min_price'] ?? 0; ?></span>
                 <span class="max"><?php echo !empty($_GET['mx_p']) ? $_GET['mx_p'] : $min_max_prices['max_price'] ?? 1000; ?></span>

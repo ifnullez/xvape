@@ -234,13 +234,23 @@
     }
 }
 
+.product-slider {
+    &:hover {
+        .card_img_wrapper {
+            img {
+                transition: all .5s;
+                transform: scale(1.2);
+            }
+        }
+    }
+}
 .woocommerce {
     .product_category {
         &:hover {
             .card_img_wrapper {
                 img {
                     transition: all .5s;
-                    transform: scale(1.5);
+                    transform: scale(1.2);
                 }
             }
         }
@@ -265,7 +275,7 @@
             .card_img_wrapper {
                 img {
                     transition: all .5s;
-                    transform: scale(1.5);
+                    transform: scale(1.2);
                 }
             }
         }

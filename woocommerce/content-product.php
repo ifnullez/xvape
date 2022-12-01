@@ -26,6 +26,7 @@ if ( empty( $product ) ) {
 
 $wc_custom = new App\WC\WC_Custom();
 $helper = new App\Helper\Helper();
+$availability = $wc_custom->get_product_and_variation_availability($product);
 ?>
 <div class="product col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-3 mb-4">
     <div class="card position-relative shadow-sm">
@@ -52,30 +53,30 @@ $helper = new App\Helper\Helper();
             </a>
         </div>
         <div class="card-footer justify-content-between d-flex align-items-center">
-            <?php if(!$product->is_in_stock()){ ?>
-            <?php echo wc_get_stock_html($product); ?>
+            <?php if(!$availability){ ?>
+                <?php echo wc_get_stock_html($product); ?>
             <?php } else { ?>
-            <span class="product-price">
-                <?php if(!empty($product->get_price_html())){ ?>
-                <?php echo $product->get_price_html(); ?>
-                <?php } else { ?>
-                <a href="<?php echo $product->get_permalink(); ?>" class="btn btn-outline-success">
-                    <i class="bi bi-collection"></i>
-                </a>
-                <?php } ?>
-            </span>
+                <span class="product-price">
+                    <?php if(!empty($product->get_price_html())){ ?>
+                        <?php echo $product->get_price_html(); ?>
+                    <?php } else { ?>
+                        <a href="<?php echo $product->get_permalink(); ?>" class="btn btn-outline-success">
+                            <i class="bi bi-collection"></i>
+                        </a>
+                    <?php } ?>
+                </span>
             <?php } ?>
             <?php if($product->is_in_stock() && !$product->is_type( 'variable' )){ ?>
-            <button type="button"
-                id="to_cart" 
-                data-quantity="1"
-                data-product_id="<?php echo $product->get_id(); ?>"
-                data-product_sku="<?php echo $product->get_sku(); ?>"
-                class="btn btn-success 
-                <?php echo $product->is_in_stock() && !$product->is_type( 'variable' ) ? '' : 'disabled'; ?>">
-                <?php _e('Купить', 'woocommerce'); ?>
-                    <i class="bi bi-bag-plus"></i>
-            </button>
+                <button type="button"
+                    id="to_cart" 
+                    data-quantity="1"
+                    data-product_id="<?php echo $product->get_id(); ?>"
+                    data-product_sku="<?php echo $product->get_sku(); ?>"
+                    class="btn btn-success 
+                    <?php echo $product->is_in_stock() && !$product->is_type( 'variable' ) ? '' : 'disabled'; ?>">
+                    <?php _e('Купить', 'woocommerce'); ?>
+                        <i class="bi bi-bag-plus"></i>
+                </button>
             <?php } else { ?>
                 <a href="<?php echo $product->get_permalink(); ?>" class="btn btn-success">
                     <?php _e('Купить', 'woocommerce'); ?>

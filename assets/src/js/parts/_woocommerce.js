@@ -3,6 +3,28 @@ import noUiSlider from 'nouislider';
 jQuery(document).ready($ => {
   const priceSlider = document.getElementById('price_filter_slider');
   const priceSliderPips = document.getElementById('price_filter_pips');
+  let productId = $("#to_cart").attr('data-product_id');
+
+  if(productId) {
+    $.post({
+      url: main.url,
+      data: {
+        action: 'get_product_availability',
+        'pID': productId
+      },
+      beforeSend: () => {
+          showLoader(true)
+      },
+      success: (response) => {
+          if(response.data.in_stock){
+            $('#to_cart').removeClass('disabled');
+          }
+      },
+      complete: (x) => {
+        showLoader(false)
+      }
+  })
+  }
 
   if (priceSlider) {
     const range = {
@@ -93,6 +115,9 @@ jQuery(document).ready($ => {
         $(e.currentTarget).addClass('button--loading');
       },
       success: (r) => {
+        if(!r.data.added){
+          showToast(`Please select product options in dropdown`, "Notice", '<i class="bi bi-bag-check"></i>');
+        }
         if (r.data.added) {
           $(document.body).trigger('wc_fragments_loaded');
           $(document.body).trigger('update_checkout');
@@ -145,7 +170,9 @@ jQuery(document).ready($ => {
         } else {
           $('.custom_summary__product_controls_add .product-price > span').remove();
           $('#to_cart').addClass('disabled');
-          $('.custom_summary__product_controls_add .product-price').append(` | <span class="text-red">${main.out_of_stock}</span>`);
+          if($('input[name="variation_id"]').val() !== ''){
+            $('.custom_summary__product_controls_add .product-price').append(` | <span class="text-red">${main.out_of_stock}</span>`);
+          }
         }
         // sku
         if (response.data.sku !== '') {

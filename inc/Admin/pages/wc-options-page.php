@@ -17,5 +17,14 @@
                 </button>
             </td>
         </tr>
+        <tr>
+            <td>Make Variable</td>
+            <td>Set all woocommerce product type to variable</td>
+            <td>
+                <button type="button" id="set_all_products_variable_type">
+                    Start
+                </button>
+            </td>
+        </tr>
     </tbody>
 </table>

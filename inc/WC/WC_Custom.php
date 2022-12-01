@@ -18,6 +18,9 @@ class WC_Custom {
         add_action('wp_ajax_nopriv_mini_cart_count', [$this, 'mini_cart_count']);
         add_action('wp_ajax_to_cart', [$this, 'ajax_custom_add_to_cart']);
         add_action('wp_ajax_nopriv_to_cart', [$this, 'ajax_custom_add_to_cart']);
+        // check availability of product
+        add_action('wp_ajax_get_product_availability', [$this, 'get_product_and_variation_availability']);
+        add_action('wp_ajax_nopriv_get_product_availability', [$this, 'get_product_and_variation_availability']);
 
         add_action('wp_ajax_find_variation', [$this, 'ajax_find_variation']);
         add_action('wp_ajax_nopriv_find_variation', [$this, 'ajax_find_variation']);
@@ -38,11 +41,15 @@ class WC_Custom {
         add_filter( 'woocommerce_product_tabs', array( $this, 'remove_unneeded_single_product_tabs' ) );
         add_filter( 'woocommerce_product_get_rating_html', [$this, 'wc_custom_comment_rating_html'], 10, 3);
         add_action( 'woocommerce_product_query', [$this, 'custom_product_query'] );
+        // insert product attrs
         add_action( 'wp_ajax_insert_local_based_attrs', [$this, 'insert_local_based_attrs'] );
         add_action( 'wp_ajax_nopriv_insert_local_based_attrs', [$this, 'insert_local_based_attrs'] );
         // add custom tabs
         add_filter( 'woocommerce_product_data_tabs', [$this, 'product_custom_tab'], 10, 1 );
         add_action( 'woocommerce_product_data_panels', [$this, 'product_custom_parameters_tab_content'], 10, 1 );
+        // make all products type to variable
+        add_action( 'wp_ajax_set_all_products_variable_type', [$this, 'set_all_products_variable_type'] );
+        add_action( 'wp_ajax_nopriv_set_all_products_variable_type', [$this, 'set_all_products_variable_type'] );
     }
     public function mini_cart_count() {
         wp_send_json_success([
@@ -163,6 +170,43 @@ class WC_Custom {
             }
             return json_decode($product);
         }
+    }
+    // check product and his variation availability
+    public function get_product_and_variation_availability($product)
+    {
+        if(empty($product)){
+            $product = $_POST['pID'];
+        }
+
+        $stock = [];
+        $product = wc_get_product($product);
+        $stock[] = $product->get_stock_quantity() ?? 0;
+        if($product->is_in_stock() || $product->backorders_allowed()){
+            $stock[] = 1;
+        }
+        if(!empty($product) && $product->is_type('variable')){
+            $variations = $product->get_available_variations();
+            if(!empty($variations)){
+                foreach($variations as $variation){
+                    $variation_obj = new \WC_Product_Variation($variation);
+                    // print_r($variation_obj);
+                    if($variation_obj->backorders_allowed() || $variation_obj->is_in_stock()){
+                        $stock[] = 1;  
+                    }
+                    // print_r($variation_obj->get_stock_quantity());
+                    $stock[] = $variation_obj->get_stock_quantity();
+                }
+            }
+        }
+        $stock_status = array_sum($stock) > 0 ? true : false;
+
+        if(defined('DOING_AJAX') && DOING_AJAX) {
+            wp_send_json_success([
+                'in_stock' => $stock_status
+            ]);
+        }
+
+        return $stock_status;
     }
 
     public function ajax_find_variation(){
@@ -485,6 +529,24 @@ class WC_Custom {
                 );
             }
         }
+    }
+
+    public function set_all_products_variable_type()
+    {
+        $products = get_posts([
+            'post_type' => 'product',
+            'numberposts' => -1
+        ]);
+        if(!empty($products)){
+            foreach($products as $product) {
+                $product = new \WC_Product( $product->ID );
+                if($product->is_type('simple')){
+                    // wp_remove_object_terms( $product->get_ID(), 'simple', 'product_type', true );
+                    wp_set_object_terms( $product->get_ID(), 'variable', 'product_type', true );
+                }
+            }
+        }
+        wp_send_json_success();
     }
     
 }

@@ -11,6 +11,10 @@
 @import "./parts/loader";
 @import "~/node_modules/tiny-slider/dist/tiny-slider.css";
 
+:root {
+    margin: 0 !important;
+}
+
 html,
 body {
     font-size: 16px;
