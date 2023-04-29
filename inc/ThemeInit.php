@@ -52,8 +52,11 @@ class ThemeInit
         add_action('wp_enqueue_scripts', [$this, 'theme_scripts']);
         add_action('admin_enqueue_scripts', [$this, 'admin_theme_scripts']);
         add_filter('get_custom_logo', [$this, 'change_logo_class']);
-        add_filter('nav_menu_css_class', [$this, 'add_menu_list_item_class'], 1, 3);
-        add_filter('nav_menu_link_attributes', [$this, 'add_menu_link_class'], 1, 3);
+        // add_filter('nav_menu_css_class', [$this, 'add_menu_list_item_class'], 1, 3);
+        // add_filter( 'wp_nav_menu_objects', [$this, "fix_active_menu_item"], 2 );
+        add_filter( 'wp_nav_menu_objects', [$this, "fix_active_menu_item"], 2 );
+        add_filter( 'nav_menu_link_attributes', [$this, 'add_menu_link_atts'], 10, 3 );
+        // add_filter('nav_menu_link_attributes', [$this, 'add_menu_link_class'], 1, 3);
         // add_filter('use_block_editor_for_post', '__return_false', 10);
         add_filter('wp_get_nav_menu_items', [$this, 'auto_add_cats'], 10, 3);
         add_action('wp_logout', [$this, 'auto_redirect_after_logout']);
@@ -62,7 +65,16 @@ class ThemeInit
         // remove_filter( 'terms_clauses', [$this, 'replace_inner_with_straight_joins'], 20 );
         // add_filter( 'terms_clauses', [$this, 'replace_inner_with_straight_joins'], 20 );
     }
-
+    public function add_menu_link_atts( array $atts, object $item, $args ): array
+    {
+        // check if the item is in the primary menu
+        // if( $args->menu == 'primary' ) {
+          // add the desired attributes:
+          $atts['class'] = 'btn';
+        // }
+        return $atts;
+    }
+    
     public function register_bootstrap_5_icon_field_provider()
     {
         Carbon_Fields::instance()->ioc['icon_field_providers'][$this->provider_id] = function ($container) {
@@ -116,16 +128,16 @@ class ThemeInit
 
     public function add_menu_list_item_class($classes, $item, $args)
     {
-        if (property_exists($args, 'list_item_class')) {
-            $classes[] = $args->list_item_class;
+        if (in_array('list_item_class', $args)) {
+            $classes[] = $args['list_item_class'];
         }
         return $classes;
     }
 
     public function add_menu_link_class($atts, $item, $args)
     {
-        if (property_exists($args, 'link_class')) {
-            $atts['class'] = $args->link_class;
+        if (in_array('link_class', $args)) {
+            $atts['class'] = $args['link_class'];
         }
         return $atts;
     }
@@ -173,29 +185,97 @@ class ThemeInit
         remove_action('wp_head', 'feed_links_extra', 3);
         remove_action('wp_head', 'pagenavi_css');
     }
-
-    public function _custom_nav_menu_item($title, $url, $order, $parent = 0)
+    public function fix_active_menu_item($menu_items)
     {
-        $item = new stdClass();
-        $item->ID = 1000000 + $order + $parent;
-        $item->db_id = $item->ID;
-        $item->title = $title;
-        $item->url = $url;
-        $item->menu_order = $order;
-        $item->menu_item_parent = $parent;
-        $item->type = '';
-        $item->object = '';
+        $current_object = (get_queried_object_id() * 2 ) ?? 0;
+        if(!empty($menu_items)){
+            foreach($menu_items as $k => $v){
+                if($v->ID == $current_object ){
+                    $menu_items[$k]->current = true;
+                    $menu_items[$k]->classes[] = "current_page_item";
+                }
+            }
+        }
+        return $menu_items;
+    }
+
+    public function _custom_nav_menu_item(Object $item): \WP_Post
+    {
+        // define doesn't exist ID's to prevent menu items mixing and wolking to another ( not parent ) items
+        $ID = $item->term_id * 2;
+        $parentID = $item->parent * 2;
+
+        // build the object
+        $item->ID = $ID;
+        $item->db_id = $ID;
+        $item->title = $item->name;
+        $item->url = get_term_link($item->term_id);
+        $item->menu_order = $ID;
+        $item->menu_item_parent = $parentID;
+        $item->type = 'post_type';
+        $item->post_type = 'nav_menu_item';
+        $item->object = 'page';
         $item->object_id = '';
-        $item->classes = array();
+        $item->classes = [];
         $item->target = '';
-        $item->attr_title = '';
-        $item->description = '';
+        $item->current = false;
+        $item->attr_title = $item->name;
+        $item->description = $item->description;
         $item->xfn = '';
-        $item->status = '';
+        $item->post_status = 'publish';
+        $item = new \WP_Post($item);
         return $item;
     }
-    // TODO: Rewrite this method Because it\'s bad decision 
-    public function auto_add_cats($items, $menu, $args)
+
+    public function get_taxonomy_hierarchy( string $taxonomy, int $parent = 0 ): array
+    {
+        $children = [];
+        if(taxonomy_exists($taxonomy)){
+            $taxonomy = is_array( $taxonomy ) ? array_shift( $taxonomy ) : $taxonomy;
+            $terms = get_terms( $taxonomy, array( 'parent' => $parent, "hide_empty" => false ) );
+            if(!empty($terms)){
+                foreach ( $terms as $term ){
+                    if($term->slug != 'uncategorized'){
+                        $children[ $term->term_id ] = $term;
+                        $term->children = $this->get_taxonomy_hierarchy( $taxonomy, $term->term_id );
+                    }
+                }
+            }
+        }
+        return $children;
+    }
+
+    public function get_taxonomy_hierarchy_multiple( string $taxonomies, int $parent = 0 ): array
+    {
+        if ( ! is_array( $taxonomies )  ) {
+            $taxonomies = [ $taxonomies ];
+        }
+        $results = [];
+        foreach( $taxonomies as $taxonomy ){
+            $terms = $this->get_taxonomy_hierarchy( $taxonomy, $parent );
+            if ( $terms ) {
+                $results[ $taxonomy ] = $terms;
+            }
+        }
+        return $results;
+    }
+
+    public function format_categories_for_menu(array $item): array
+    {
+        $items = [];
+        array_walk_recursive($item, function($value, $key) use (&$items) { 
+            $items[] = $this->_custom_nav_menu_item($value);
+            if(!empty($value->children)){
+                $children = $this->format_categories_for_menu($value->children);
+                array_walk_recursive($children, function($value, $key) use (&$items) {
+                    $items[] = $this->_custom_nav_menu_item($value);
+                });
+            }
+        });
+        return $items;
+    }
+
+    public function auto_add_cats(array $items, Object $menu, array $args): array
     {
         $theme_locations = get_nav_menu_locations();
         if ($menu->term_id != $theme_locations['primary_menu']) {
@@ -205,64 +285,13 @@ class ThemeInit
         if (is_admin()) {
             return $items;
         }
-        $ctr = ($items[sizeof($items) - 1]->ID) + 1;
-
-        foreach ($items as $index => $i) {
-            // print_r($i->object);
-            // if ("product_cat" !== $i->object) {
-            //     continue;
-            // }
-            // $menu_parent = $i->ID;
-
-            $terms = get_terms([
-                'taxonomy' => 'product_cat',
-                'hide_empty' => true,
-                'parent' => 0,
-                'orderby' => 'name',
-                'order' => 'ASC',
-            ]);
-            if (!empty($terms) && $index == 0) {
-                foreach ($terms as $term) {
-                    if ($term->slug != 'uncategorized') {
-                        $new_item = $this->_custom_nav_menu_item($term->name, get_term_link($term), $ctr); // last parameter needed to apped categories to some menu item with id
-                        $items[] = $new_item;
-                        $ctr++;
-                        $terms_child = get_terms(array('taxonomy' => 'product_cat', 'parent' => $term->term_id));
-                        if (!empty($terms_child)) {
-                            foreach ($terms_child as $term_child) {
-                                $new_child = $this->_custom_nav_menu_item($term_child->name, get_term_link($term_child), $ctr, $new_item->ID);
-                                $items[] = $new_child;
-                                $ctr++;
-                                $third_child = get_terms(array('taxonomy' => 'product_cat', 'parent' => $term_child->term_id));
-                                if (!empty($third_child)) {
-                                    foreach ($third_child as $child) {
-                                        $third_new_child = $this->_custom_nav_menu_item($child->name, get_term_link($child), $ctr, $new_child->ID);
-                                        $items[] = $third_new_child;
-                                        $ctr++;
-                                        $fourth_child = get_terms(array('taxonomy' => 'product_cat', 'parent' => $child->term_id));
-                                        if (!empty($fourth_child)) {
-                                            foreach ($fourth_child as $fr_child) {
-                                                $fourth_new_child = $this->_custom_nav_menu_item($fr_child->name, get_term_link($fr_child), $ctr, $third_new_child->ID);
-                                                $items[] = $fourth_new_child;
-                                                $ctr++;
-                                                $fifth_child = get_terms(array('taxonomy' => 'product_cat', 'parent' => $fr_child->term_id));
-                                                if (!empty($fifth_child)) {
-                                                    foreach ($fifth_child as $fv_child) {
-                                                        $fifth_new_child = $this->_custom_nav_menu_item($fv_child->name, get_term_link($fv_child), $ctr, $fourth_new_child->ID);
-                                                        $items[] = $fifth_new_child;
-                                                        $ctr++;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        // all product cats and his data
+        $wooCats = $this->get_taxonomy_hierarchy_multiple("product_cat");
+        $getWooCategories = !empty($wooCats) ? $wooCats["product_cat"] : [];
+        if(!empty($getWooCategories)){
+            $items = array_merge($items, $this->format_categories_for_menu( $getWooCategories ));
         }
+        
         return $items;
     }
 

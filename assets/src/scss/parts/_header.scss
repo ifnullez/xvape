@@ -14,8 +14,12 @@
                 }
 
                 a {
+                    text-align: left;
                     padding: 22px 10px;
                     border-bottom: 3px solid transparent;
+                    display: flex;
+                    flex-flow: row nowrap;
+                    align-items: center;
                 }
 
                 i {
@@ -79,7 +83,8 @@
                     margin: 0;
                     padding: 0;
                     background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity));
-                    width: 20vh;
+                    min-width: 20vh;
+                    width: 30vh;
                 }
             }
         }

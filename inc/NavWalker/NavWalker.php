@@ -223,15 +223,17 @@ class NavWalker extends Walker_Nav_menu {
        * @param int      $depth     Depth of menu item. Used for padding.
        */
       $title = apply_filters( 'nav_menu_item_title', $title, $menu_item, $args, $depth );
-
-      $item_output  = $args->before;
+      $item_output  = !empty($args->before) ? $args->before : "";
       $item_output .= '<a' . $attributes . '>';
       if( in_array('menu-item-has-children', $classes) ){
         $item_output .= '<i class="bi bi-chevron-double-right"></i>';
       }
-      $item_output .= $args->link_before . $title . $args->link_after;
+      $link_before = !empty($args->link_before) ? $args->link_before : "";
+      $link_after = !empty($args->link_after) ? $args->link_after : "";
+      
+      $item_output .=  $link_before . $title . $link_after;
       $item_output .= '</a>';
-      $item_output .= $args->after;
+      $item_output .= !empty($args->after) ? $args->after : "";
 
       /**
        * Filters a menu item's starting output.

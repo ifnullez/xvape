@@ -34,7 +34,8 @@ if ( post_password_required() ) {
 }
 
 $product_properties = $helper->get_product_parameters_by_id($product->get_id()); 
-$availability = $wc_custom->get_product_and_variation_availability($product); ?>
+$availability = $wc_custom->get_product_and_variation_availability($product); 
+?>
 <div id="custom_product-<?php the_ID(); ?>">
     <?php
 	/**

@@ -188,18 +188,21 @@ class WC_Custom {
             $variations = $product->get_available_variations();
             if(!empty($variations)){
                 foreach($variations as $variation){
-                    $variation_obj = new \WC_Product_Variation($variation);
-                    // print_r($variation_obj);
-                    if($variation_obj->backorders_allowed() || $variation_obj->is_in_stock()){
-                        $stock[] = 1;  
+                    $variation_obj = wc_get_product($variation['variation_id']);
+                    if($variation_obj->is_in_stock()){
+                        $stock[] = 1;
                     }
-                    // print_r($variation_obj->get_stock_quantity());
-                    $stock[] = $variation_obj->get_stock_quantity();
+                    // dump($variation_obj->get_stock_quantity());
+                    // $stock[] = !empty($variation_obj->get_stock_quantity()) ? $variation_obj->get_stock_quantity(): '';
                 }
             }
+            if($product->is_type('simple') && $product->is_in_stock()){
+                $stock[] = 1;
+            }
         }
-        $stock_status = array_sum($stock) > 0 ? true : false;
-
+        
+        $stock_status = array_sum(array_unique($stock)) > 0 ? true : false;
+        
         if(defined('DOING_AJAX') && DOING_AJAX) {
             wp_send_json_success([
                 'in_stock' => $stock_status
@@ -427,7 +430,7 @@ class WC_Custom {
             $sql_filter_params .= " AND pm2.meta_key = '_stock_status' AND pm2.meta_value = 'instock'";
         }
 
-        // category filter constrictor
+        // category filter constructor
         if(isset($_GET['p_cat']) && !empty($_GET['p_cat'])){
             $sql_filter_params .= " AND tt.taxonomy = 'product_cat' AND (";
             foreach($_GET['p_cat'] as $cat){

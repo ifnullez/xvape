@@ -6,6 +6,14 @@
     },
     "require": {
         "htmlburger/carbon-fields": "@dev",
-        "htmlburger/carbon-field-icon": "@dev"
+        "htmlburger/carbon-field-icon": "^3.1.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": false
+        }
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^6.2"
     }
 }

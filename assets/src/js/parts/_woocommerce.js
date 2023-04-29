@@ -4,7 +4,9 @@ jQuery(document).ready($ => {
   const priceSlider = document.getElementById('price_filter_slider');
   const priceSliderPips = document.getElementById('price_filter_pips');
   let productId = $("#to_cart").attr('data-product_id');
-
+  if($(".xldr")){
+    $(".xldr").remove();
+  }
   if(productId) {
     $.post({
       url: main.url,
