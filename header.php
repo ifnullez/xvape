@@ -16,19 +16,6 @@
 }
 ?>
     <header id="site-header">
-        <div class="xldr">
-            <div class="infinity">
-                <div>
-                    <span></span>
-                </div>
-                <div>
-                    <span></span>
-                </div>
-                <div>
-                    <span></span>
-                </div>
-            </div>
-        </div>
         <nav class="navbar navbar-expand-lg navbar-light bg-light p-0">
         <div class="container-fluid">
             <?php the_custom_logo();?>
